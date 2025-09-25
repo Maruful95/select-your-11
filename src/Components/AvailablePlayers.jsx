@@ -6,13 +6,17 @@ const AvailablePlayers = ({
   playersPromise,
   availableBalance,
   setAvailableBalance,
+  selectedPlayers,
+  setSelectedPlayers,
 }) => {
   const playerData = use(playersPromise);
-  console.log(playerData);
+  
   return (
     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
       {playerData.map((player) => (
         <PlayerCard
+          selectedPlayers={selectedPlayers}
+          setSelectedPlayers={setSelectedPlayers}
           availableBalance={availableBalance}
           setAvailableBalance={setAvailableBalance}
           player={player}

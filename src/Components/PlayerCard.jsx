@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import playerLogo from "../assets/player-logo.png";
 import flagLogo from "../assets/flag.png";
+import { toast } from "react-toastify";
 
-const PlayerCard = ({ player, availableBalance, setAvailableBalance }) => {
+const PlayerCard = ({
+  player,
+  availableBalance,
+  setAvailableBalance,
+  selectedPlayers,
+  setSelectedPlayers,
+}) => {
   const [isSelected, setSelected] = useState(false);
   return (
     <div className="card bg-base-100 shadow-sm p-6 rounded-2xl ">
@@ -40,11 +47,17 @@ const PlayerCard = ({ player, availableBalance, setAvailableBalance }) => {
             disabled={isSelected}
             onClick={() => {
               if (availableBalance < player.price) {
-                alert("Not enough balance");
+                toast("Not enough balance");
                 return;
+              }
+              if (selectedPlayers.length === 6) {
+                toast("Already selected 6 players!");
+                return
               }
               setSelected(true);
               setAvailableBalance(availableBalance - player.price);
+
+              setSelectedPlayers([...selectedPlayers, player]);
             }}
             className="btn bg-white rounded-lg"
           >

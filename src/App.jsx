@@ -1,4 +1,5 @@
 import { Suspense, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import "./App.css";
 import AvailablePlayers from "./Components/AvailablePlayers";
 import Navbar from "./Components/Navbar";
@@ -14,13 +15,26 @@ const playersPromise = fetchPlayers();
 function App() {
   const [toggle, setToggle] = useState(true);
   const [availableBalance, setAvailableBalance] = useState(6000000000);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+
+  const removeSelectedPlayer = (p) => {
+    const filteredPlayer = selectedPlayers.filter((ply) => ply.id !== p.id);
+
+    setSelectedPlayers(filteredPlayer);
+
+    setAvailableBalance(availableBalance + p.price);
+  };
 
   return (
     <>
       <Navbar availableBalance={availableBalance}></Navbar>
 
       <div className="flex items-center justify-between max-w-7xl mx-auto mb-7">
-        <h1 className="font-bold text-[28px]">Available Players</h1>
+        <h1 className="font-bold text-[28px]">
+          {toggle === true
+            ? "Available Players"
+            : `Selected Players (${selectedPlayers.length}/6)`}
+        </h1>
         <div className="text-base font-normal text-[#13131380]">
           <button
             onClick={() => setToggle(true)}
@@ -36,7 +50,7 @@ function App() {
               toggle === false ? "bg-[#E7FE29] font-bold text-black" : ""
             } border-1 border-[#13131310] border-l-0 px-7 py-2 rounded-r-xl`}
           >
-            Selected<span>(0)</span>
+            Selected <span>({selectedPlayers.length})</span>
           </button>
         </div>
       </div>
@@ -48,14 +62,21 @@ function App() {
           }
         >
           <AvailablePlayers
+            selectedPlayers={selectedPlayers}
+            setSelectedPlayers={setSelectedPlayers}
             availableBalance={availableBalance}
             setAvailableBalance={setAvailableBalance}
             playersPromise={playersPromise}
           ></AvailablePlayers>
         </Suspense>
       ) : (
-        <SelectedPlayers></SelectedPlayers>
+        <SelectedPlayers
+          selectedPlayers={selectedPlayers}
+          removeSelectedPlayer={removeSelectedPlayer}
+        ></SelectedPlayers>
       )}
+
+      <ToastContainer></ToastContainer>
     </>
   );
 }
